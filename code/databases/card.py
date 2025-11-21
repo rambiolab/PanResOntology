@@ -13,7 +13,8 @@ agg_funcs = {
     'Drug Class': lambda x: ';'.join(x.unique()),
     'DNA Accession': lambda x: ';'.join(x.unique()),
     'Protein Accession': lambda x: ';'.join(x.unique()),
-    'CVTERM ID': 'first'
+    'CVTERM ID': 'first',
+    'Resistance Mechanism': lambda x: ';'.join(x.unique()),
 }
 
 
@@ -44,6 +45,7 @@ def add_card_annotations(file: str, onto: Ontology, logger, db_name: str = 'CARD
     # Lists for logging failed matches
     failed_matches = []
     failed_phenotype_matches = defaultdict(list)
+    failed_mechanism_matches = defaultdict(list)
 
     # Loop through matched pan_ genes and original gene names to add the annotations
     for gene, og in matched_genes.items():
@@ -75,6 +77,14 @@ def add_card_annotations(file: str, onto: Ontology, logger, db_name: str = 'CARD
                 success_match = gene_target(gene, og, target=phenotype, onto=onto, db_name=db_name)
                 if not success_match:
                     failed_phenotype_matches[phenotype].append(f"{gene.name} ({og.name})")
+            
+            # Extract mechanism and clean them
+            mechanisms = m['Resistance Mechanism'].item().split(';')
+            for mechanism in mechanisms:
+                mechanism = mechanism.strip().title()
+                success_match = gene_target(gene, og, target=mechanism, onto=onto, db_name=db_name)
+                if not success_match:
+                    failed_mechanism_matches[mechanism].append(f"{gene.name} ({og.name})")
 
             # Add DNA accession number to the pan_ gene and the original gene name
             dna_accessions = m['DNA Accession'].item().split(';')
@@ -94,5 +104,9 @@ def add_card_annotations(file: str, onto: Ontology, logger, db_name: str = 'CARD
         failed_phenotype_matches_string = "\n".join([f"{k}: {', '.join(v)}" for k,v in failed_phenotype_matches.items()])
         logger.warning(f"{db_name}: Could not match phenotypes annotations for the following:\n" + failed_phenotype_matches_string)
     
+    if len(failed_mechanism_matches):
+        failed_mechanism_matches_string = "\n".join([f"{k}: {', '.join(v)}" for k,v in failed_mechanism_matches.items()])
+        logger.warning(f"{db_name}: Could not match mechanism of resistance annotations for the following:\n" + failed_mechanism_matches_string)    
+
     # Log the successful addition of annotations
     logger.success(f"Added {db_name} annotations to the PanRes ontology.")

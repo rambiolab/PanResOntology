@@ -138,6 +138,11 @@ def createModel(onto):
         range = [PanGene]
         namespace = onto
 
+    class is_discarded(ObjectProperty):
+        domain = [PanGene]
+        range = [DiscardedPanGene]
+        namespace = onto
+
     has_pan_name.inverse_property = same_as
     class gene_alt_name(OriginalGene >> str): 
         namespace = onto

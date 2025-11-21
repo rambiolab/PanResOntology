@@ -1,6 +1,7 @@
 import pandas as pd
 from owlready2 import Thing, Ontology, destroy_entity
 from functions import get_or_create_subclass, get_instance
+import numpy as np
 
 def load_targets(excelfile: str, onto: Ontology, logger=None) -> None:
     """Load resistance targets from an Excel file into the ontology
@@ -107,7 +108,24 @@ def load_targets(excelfile: str, onto: Ontology, logger=None) -> None:
             unclassified_instance.is_a.append(unclassified_class_instance)
         except: 
             pass
-    
+
+    # Add or get mechanisms of resistance
+    mechanisms = pd.read_excel(excelfile, sheet_name='mechanisms')
+    for _, row in mechanisms.iterrows():
+        mechanism_instance = get_or_create_subclass(
+            onto = onto,
+            parent_cls = onto.ResistanceMechanism,
+            subclass_name=row['Mechanism'].strip().lower().replace(' ', '_').title()
+        )
+
+        if not pd.isna(row['Equivalent to']):
+            equivalent_instance = get_or_create_subclass(
+                onto = onto,
+                parent_cls = onto.ResistanceMechanism,
+                subclass_name=row['Equivalent to'].strip().lower().replace(' ', '_').title()
+            )
+            mechanism_instance.equivalent_to.append(equivalent_instance)
+
     # Log the successful loading of targets
     if logger is not None:
         logger.success("Loaded drugs, biocide and metal targets into the ontology.")
@@ -200,7 +218,7 @@ def gene_target(gene: Thing, og: Thing, target: str, onto: Ontology, db_name: st
     if target_instance is None:
         return False
     
-    # Check if the target is a phenotype or a class
+    # Check if the target is a phenotype, class or mechanism
     type_check = {
         'phenotype': any(
             [
@@ -217,20 +235,34 @@ def gene_target(gene: Thing, og: Thing, target: str, onto: Ontology, db_name: st
                 onto.MetalClass in target_instance.is_a,
                 onto.UnclassifiedResistanceClass in target_instance.is_a
             ]
+        ),
+        'mechanism': any(
+            [
+                onto.ResistanceMechanism in target_instance.is_a,
+            ]
         )
     }
 
     # Assign the relations based on whether the drug target is a phenotype or a class object
     if type_check['phenotype']: 
         og.has_predicted_phenotype.append(target_instance)
+        gene.has_predicted_phenotype.append(target_instance)
 
         for target_relation in target_instance.is_a:
             if any([onto.AntibioticResistanceClass in target_relation.is_a, onto.BiocideClass in target_relation.is_a]):
                 gene.has_resistance_class.append(target_relation)
                 og.has_resistance_class.append(target_relation)
+            
+            # elif any([onto.ResistanceMechanism in target_relation.is_a]):
+            #     gene.has_mechanism_of_resistance.append(target_relation)
+            #     og.has_mechanism_of_resistance.append(target_relation)
     elif type_check['class']: 
         gene.has_resistance_class.append(target_instance)
         og.has_resistance_class.append(target_instance)
+    elif type_check['mechanism']:
+        gene.has_mechanism_of_resistance.append(target_instance)
+        og.has_mechanism_of_resistance.append(target_instance)
+    # If the target is not a phenotype, class or mechanism, it is not a valid target
     else:
         return False
 

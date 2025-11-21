@@ -51,7 +51,6 @@ def get_or_create_instance(onto: Ontology, cls: Thing, name: str) -> Thing:
     
     # Construct the full IRI for the instance
     full_iri = onto.base_iri + name
-    
     # Search for the instance
     instance = onto.search_one(iri=full_iri)#"*{}".format(name))
     if instance is None:
@@ -330,7 +329,22 @@ def summarise_classes(onto: Ontology, class_name: str) -> pd.DataFrame:
 
 def get_annotations_of_individual(individual: Thing):
     """Get all annotations of an individual in the the ontology"""
-    return individual.get_annotations()
+    properties = {}
+    for p in individual.get_properties():
+        values = getattr(individual, p.name)
+        processed_values = []
+        
+        for v in values:
+            if isinstance(v, int):
+                processed_values = v
+            elif isinstance(v, str):
+                processed_values.append(v)
+            else:
+                processed_values.append(v.name)
+        
+        properties[p.name] = processed_values
+    
+    return properties
 
 def visualize_specific_classes(onto: Ontology, class_names: list, output_file: str ="specific_classes_visualization"):
     """
@@ -401,3 +415,37 @@ def get_genes_for_class(onto: Ontology, class_name: str) -> pd.DataFrame:
     df['resistance_class'] = df['resistance_class'].apply(lambda x: sorted([v.name for v in x]))
     df['resistance_phenotype'] = df['resistance_phenotype'].apply(lambda x: sorted([v.name for v in x]))
     return df
+
+def get_genes_for_class(onto, class_name):
+    
+    # instance
+    class_instance = onto.search(iri=f"*{class_name}")
+    
+    # get genes
+    genes = {
+        g.name: get_annotations_of_individual(g) for g in onto.PanGene.instances()
+    }
+    
+    # convert to dataframe
+    df = pd.DataFrame.from_dict(genes)
+    
+    # filter
+    mask = df.apply(lambda x: x.astype(str).str.contains(class_name))
+    hits = mask.any(axis=0)[mask.any(axis=0)].index.tolist()
+    
+    return df[hits].T
+
+def original_name_to_pan(onto, gene_name):
+    
+    gene_name = gene_name.replace("'", "")
+
+    # get original name instance
+    instance = onto.search(iri=f"*{gene_name}")
+    
+    if len(instance) == 0:
+        return None
+
+    pan_instance = instance[0].has_pan_name
+    if len(pan_instance) == 0:
+        return None
+    return pan_instance[0]

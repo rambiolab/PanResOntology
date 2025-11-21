@@ -1,4 +1,3 @@
-from typing import Type
 import pandas as pd
 from owlready2 import *
 import numpy as np

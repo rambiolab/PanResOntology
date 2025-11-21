@@ -1,8 +1,8 @@
-from turtle import left
 import pandas as pd
 from owlready2 import *
 import subprocess
 from loguru import logger
+from collections import defaultdict
 
 import sys
 sys.path.append('..')
@@ -21,7 +21,7 @@ database2name = {
     'resfinder': 'ResFinder'
 }
 
-def discarded_genes(discarded_list: str):
+def discarded_genes(discarded_list: str, onto: Ontology):
     """Read a list of discarded genes from a file and return them as a list.
 
     Parameters
@@ -37,6 +37,9 @@ def discarded_genes(discarded_list: str):
     
     with open(discarded_list, 'r') as f:
         discarded = [l.strip().split('_v')[0].replace('>', '') for l in f.readlines()]
+
+    for dg in discarded:
+        onto.DiscardedPanGene(dg)
     
     return discarded
 
@@ -65,8 +68,8 @@ def add_panres_genes(file: str, onto: Ontology, discarded: str, logger = logger)
 
 
     # Get list of discarded genes
-    discarded_genes_list = discarded_genes(discarded)
-    discarded_df = pd.DataFrame({'pan_gene': discarded_genes_list, 'status': 'discarded', 'reason': ''})
+    discarded_genes_list = discarded_genes(discarded, onto = onto)
+    discarded_df = pd.DataFrame({'pan_gene': discarded_genes_list, 'status': 'discarded'})
     discarded_df = discarded_df.merge(
         panres_metadata.pivot_table(
             index='userGeneName',
@@ -81,12 +84,12 @@ def add_panres_genes(file: str, onto: Ontology, discarded: str, logger = logger)
     discarded_df = discarded_df.rename(columns = database2name)
     discarded_df.to_csv(os.path.join(os.path.dirname(discarded), 'panres_discarded_genes.csv'), index=False)
 
-    # Remove discarded genes from the metadata
-    panres_metadata = panres_metadata[~panres_metadata['userGeneName'].isin(discarded_genes_list)]
+    # # Mark discarded genes from the metadata
+    # panres_metadata['is_discarded'] = panres_metadata[panres_metadata['userGeneName'].isin(discarded_genes_list)]
     
     # Get a list of the unique gene names
     genes = panres_metadata['userGeneName'].unique().tolist()
-    # genes = panres_metadata.loc[panres_metadata['database'] == 'resfinder', 'userGeneName'].unique().tolist()
+
     
     # Loop through each unique gene, add it to the ontology and its annotations
     for gene in set(genes):
@@ -96,6 +99,10 @@ def add_panres_genes(file: str, onto: Ontology, discarded: str, logger = logger)
         
         # Make new PanGene instance
         new_gene = onto.PanGene(gene)
+
+        if gene in discarded_genes_list:
+            new_gene.is_discarded.append(onto.DiscardedPanGene(gene))
+            logger.warning(f"PanRes: {gene} has been marked as discarded from the PanRes database.")
 
         # add the gene length if its consistent across all entries
         if m['gene_len'].nunique() == 1:
@@ -126,10 +133,6 @@ def add_panres_genes(file: str, onto: Ontology, discarded: str, logger = logger)
 
             # Annotate that the pan gene name is the same as the original gene name
             new_gene.same_as.append(original_gene_instance)
-
-            # Get which cluster the gene belongs to 
-            new_cluster = get_or_create_instance(onto = onto, cls = onto.PanGeneCluster, name=row['chosenSeq'].replace('pan', 'panc'))
-            new_gene.member_of.append(new_cluster)
     
     # logger.info(f"Adding {len(genes)} PanRes genes to the ontology.")
     logger.success(f"Added PanRes genes (n={len(genes)}) to the ontology.")
@@ -150,18 +153,32 @@ def add_panres_proteins(file: str, clstrs: str, onto: Ontology, logger):
     """
 
     # Grep all headers of the protein sequences and extract them
-    p = subprocess.run(f"grep '>' {file}", shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    protein_names = [l.split('_v1')[0].replace(">", "") for l in p.stdout.decode().split()]
+    #p = subprocess.run(f"grep '>' {file}", shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    #protein_names = [l.split('_v1')[0].replace(">", "") for l in p.stdout.decode().split()]
+    # protein2name = {
+    #     l.strip(): l.split('_v1')[0].replace('>', '').replace('_', '').upper() for l in p.stdout.decode().split()
+    # }
+    # print(protein2name)
 
-    # Loop through the protein names and add to the ontology
-    for protein_name in protein_names:
-        protein_instance = get_or_create_instance(onto = onto, cls = onto.PanProtein, name=protein_name.title())
-
-        # Get the corresponding gene cluster instance and link the protein name to it
-        gene_cluster = get_instance(onto = onto, name = protein_name)
-        if gene_cluster is not None:
-            gene_cluster.translates_to.append(protein_instance)    
+    # Get protein sequence lengths
+    p = subprocess.run(f"seqkit faidx {file}",  shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    with open(file + '.fai', 'r') as f:
+        # Read the fasta index file and extract protein names and lengths
+        protein_lengths = {l.split()[0].split('_v1')[0]: int(l.split()[1]) for l in f.readlines() if l}
     
+    # Loop through the protein names and add to the ontology
+    for pan_name, protein_length in protein_lengths.items():
+        protein_name = pan_name.replace('_', '').upper()
+        protein_instance = get_or_create_instance(onto = onto, cls = onto.PanProtein, name=protein_name)
+        
+        # Add the protein length
+        protein_instance.has_length.append(protein_length)
+
+        # Get the corresponding gene instance and link the protein name to it
+        gene_instance = get_instance(onto = onto, name = pan_name)
+        if gene_instance is not None:
+            gene_instance.translates_to.append(protein_instance)            
+
     # Log the successfull addition  of proteins
     logger.success("Added PanRes proteins to the ontology.")
 
@@ -190,13 +207,19 @@ def add_panres_proteins(file: str, clstrs: str, onto: Ontology, logger):
 
     # Loop through each cluster and add it to the ontology
     for cl, cl_members in clusters.items():
+        cl = cl.replace('pan_', 'PANCL')
         cluster_protein_instance = get_or_create_instance(onto = onto, cls = onto.PanProteinCluster, name=cl.replace('pan', 'Pan'))
+        
+        # Add how many members the cluster has
+        cluster_protein_instance.has_members.append(str(len(cl_members)))
 
         # Link each protein member to its cluster representative
         for cl_member in cl_members:
-            cl_instance = get_or_create_instance(onto = onto, cls = onto.PanProtein, name = cl_member.title())
-            if cl_instance is not None:
-                cl_instance.member_of.append(cluster_protein_instance)
+            cl_member = cl_member.replace('pan_', 'PAN')
+            #cl_instance = get_or_create_instance(onto = onto, cls = onto.PanProtein, name = cl_member.title())
+            protein_instance = get_instance(onto = onto, name = cl_member)
+            if protein_instance is not None:
+                protein_instance.member_of.append(cluster_protein_instance)
         
     # Log the successful addition of protein clusters
-    logger.success("Added PanRes protein clusters to the ontology.")
+    logger.success("Added PanRes 1D protein clusters to the ontology.")
