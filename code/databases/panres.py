@@ -137,7 +137,7 @@ def add_panres_genes(file: str, onto: Ontology, discarded: str, logger = logger)
     # logger.info(f"Adding {len(genes)} PanRes genes to the ontology.")
     logger.success(f"Added PanRes genes (n={len(genes)}) to the ontology.")
 
-def add_panres_proteins(file: str, clstrs: str, onto: Ontology, logger):
+def add_panres_proteins(file: str, clstrs: str, struct_clstrs: str, onto: Ontology, logger):
     """Adds PanRes proteins and their clusters to the ontology.
 
     Parameters
@@ -146,6 +146,8 @@ def add_panres_proteins(file: str, clstrs: str, onto: Ontology, logger):
         Path to the faa file containing PanRes protein sequences.
     clstrs : str
         Path to the clstr file containing PanRes protein clusters, as determined by CD-HIT.
+    3dclstrs : str
+        Path to the clustering.out file containing PanRes 3D protein clusters, as determined by clustering.py
     onto : Ontology
         The ontology to load the protein information into
     logger : loguru.logger
@@ -220,6 +222,70 @@ def add_panres_proteins(file: str, clstrs: str, onto: Ontology, logger):
             protein_instance = get_instance(onto = onto, name = cl_member)
             if protein_instance is not None:
                 protein_instance.member_of.append(cluster_protein_instance)
-        
+
     # Log the successful addition of protein clusters
     logger.success("Added PanRes 1D protein clusters to the ontology.")
+
+    # Add protein structure class 
+    for cl_rep, cl_members in clusters.items():
+        # convert 'pan_123' to 'PAN123_struct'
+        m = re.match(r'pan_(\d+)', cl_rep)
+        if not m:
+            continue
+        num = m.group(1)
+        struct_name = f"PAN{num}_struct"
+        structure_instance = get_or_create_instance(onto=onto, cls=onto.PanStructure, name=struct_name)
+        
+        #link protein cluster to its structure
+        cl = f"PANCL{num}"
+        protein_cluster_instance = get_instance(onto=onto, name=cl)
+        
+        # Link each cluster to its structure
+        protein_cluster_instance.folds_to.append(structure_instance)
+    
+    # Log the succesful addition of protein structures
+    logger.success("Added PanRes protein structures to the ontology.")
+    
+    # Parse the clustering.out file to get 3D structure clusters
+    struct_cl = defaultdict(list)
+
+    with open(struct_clstrs, 'r') as f:
+        for line in f:
+            line = line.strip()
+            if not line or line.startswith("#"):
+                continue
+            rep, member = line.split("\t")
+            rep = rep.split("_v")[0]       # strip version: pan_123_v1 → pan_123
+            member = member.split("_v")[0]
+            struct_cl[rep].append(member)
+
+    logger.success("Parsed PanRes 3D structure clusters.")
+    
+
+    for rep, struct_members in struct_cl.items():
+        m = re.match(r"pan_(\d+)", rep)
+        if not m:
+            continue
+        num = m.group(1)
+
+        # Create structure cluster
+        struct_cluster_name = f"PANCL{num}_struct"
+        struct_cluster_instance = get_or_create_instance(onto=onto,cls=onto.PanStructureCluster,name=struct_cluster_name)
+        
+        # Link number of members to each cluster
+        struct_cluster_instance.has_members.append(str(len(struct_members)))
+
+        # Link each structure member to its cluster
+        for mem in struct_members:
+            mm = re.match(r"pan_(\d+)", mem)
+            if not mm:
+                continue
+            mnum = mm.group(1)
+            mem_struct_name = f"PAN{mnum}_struct"
+
+            member_struct_instance = get_or_create_instance(onto=onto, cls=onto.PanStructure, name=mem_struct_name)
+
+            # link structure → structure cluster
+            member_struct_instance.member_of.append(struct_cluster_instance)
+
+    logger.success("Added PanRes 3D structure clusters to the ontology.")

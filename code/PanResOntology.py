@@ -20,7 +20,7 @@ load_targets(excelfile='data/targets.xlsx', onto=onto, logger=logger)
 panres.add_panres_genes("data/PanRes_data_v1.0.0.tsv", onto = onto, logger = logger, discarded='data/discarded/panres_removed_headers.txt')
 
 # add proteins
-panres.add_panres_proteins(file = 'data/proteins/panres_final_protein.faa', clstrs='data/proteins/panres_final_protein_50_90.faa.clstr', onto = onto, logger = logger)
+panres.add_panres_proteins(file = 'data/proteins/panres_final_protein.faa', clstrs='data/proteins/panres_final_protein_50_90.faa.clstr', struct_clstrs='data/proteins/3d_clustering.out', onto = onto, logger = logger)
 
 # Load data about ResFinder genes
 resfinder.add_resfinder_annotations("data/phenotypes.txt", onto, logger=logger)
