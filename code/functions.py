@@ -451,46 +451,4 @@ def original_name_to_pan(onto, gene_name):
     return pan_instance[0]
 
 
-def visualize_pan_individual(onto: Ontology, pan_id: str, output_file="pan_visualization"):
-    """
-    Visualize everything added for a specific Pan ID:
-    PanGene -> PanProtein -> PanProteinCluster -> PanStructure -> PanStructureCluster
-    """
-
-    dot = Digraph(comment=f"Visualization for {pan_id}")
-    dot.attr(rankdir='LR')
-
-    # 1. PanGene
-    gene = get_instance(onto, pan_id)
-    if not gene:
-        print(f"{pan_id} not found in ontology.")
-        return
-
-    dot.node(gene.name, f"PanGene\n{gene.name}", shape="box", color="blue")
-
-    # 2. PanProtein
-    for protein in gene.translates_to:
-        dot.node(protein.name, f"PanProtein\n{protein.name}", shape="ellipse", color="green")
-        dot.edge(gene.name, protein.name, label="translates_to")
-
-        # 3. PanProteinCluster
-        for pc in protein.member_of:
-            if pc.__class__.__name__ == "PanProteinCluster":
-                dot.node(pc.name, f"PanProteinCluster\n{pc.name}", shape="diamond", color="orange")
-                dot.edge(protein.name, pc.name, label="member_of")
-
-                # 4. PanStructure
-                for structure in pc.folds_to:
-                    dot.node(structure.name, f"PanStructure\n{structure.name}", shape="box", color="red")
-                    dot.edge(pc.name, structure.name, label="folds_to")
-
-                    # 5. PanStructureCluster
-                    for sc in structure.member_of:
-                        if sc.__class__.__name__ == "PanStructureCluster":
-                            dot.node(sc.name, f"PanStructureCluster\n{sc.name}", shape="diamond", color="purple")
-                            dot.edge(structure.name, sc.name, label="member_of")
-
-    # Render output
-    dot.render(output_file, format="png", cleanup=True)
-    display(Image(filename=output_file + ".png"))
-    print(f"Visualization saved as {output_file}.png")
+ 
