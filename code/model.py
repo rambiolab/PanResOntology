@@ -1,5 +1,5 @@
 from argparse import Namespace
-from git import Object
+#from git import Object
 from owlready2 import AnnotationProperty, Thing, FunctionalProperty, ObjectProperty, Or, AllDisjoint
 
 
