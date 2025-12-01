@@ -186,6 +186,11 @@ def createModel(onto):
         range = [Database]
         namespace = onto
 
+    class is_ecoli_homolog(AnnotationProperty):
+        domain = [onto.PanProtein]       
+        range = [bool]                
+        namespace = onto
+
     class AntimicrobialResistanceGene(PanGene): pass
     class BiocideResistanceGene(PanGene): pass
     class MetalResistanceGene(PanGene): pass

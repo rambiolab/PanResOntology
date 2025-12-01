@@ -22,6 +22,9 @@ panres.add_panres_genes("data/PanRes_data_v1.0.0.tsv", uc_file="data/gene_cluste
 # add proteins
 panres.add_panres_proteins(file = 'data/proteins/panres_final_protein.faa', clstrs='data/proteins/panres_final_protein_50_90.faa.clstr', struct_clstrs='data/proteins/3d_clustering.out', onto = onto, logger = logger)
 
+# Load data about E. coli homologs
+panres.add_panres_ecoli_homologs(infile = "data/proteins/panres_ecoli_core_homologs_60_60.tsv", onto = onto, logger = logger)
+
 # Load data about ResFinder genes
 resfinder.add_resfinder_annotations("data/phenotypes.txt", onto, logger=logger)
 

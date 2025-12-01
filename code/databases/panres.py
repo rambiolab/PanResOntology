@@ -342,3 +342,46 @@ def add_panres_proteins(file: str, clstrs: str, struct_clstrs: str, onto: Ontolo
             member_struct_instance.member_of.append(struct_cluster_instance)
 
     logger.success("Added PanRes 3D structure clusters to the ontology.")
+
+
+def add_panres_ecoli_homologs(onto: Ontology, infile: str, logger):
+    """
+    Add is_ecoli_homolog annotation to PanProtein instances.
+    File format (TSV with header):
+
+    PanProtein    is_ecoli_homolog
+    pan_5_v1.0.1_identical    1
+    """
+
+    with open(infile, "r") as f:
+        header = f.readline().strip().split("\t")
+        if header[0] != "PanProtein" or header[1] != "is_ecoli_homolog":
+            logger.error("Incorrect file format: expected 'PanProtein' and 'is_ecoli_homolog' columns.")
+            return
+
+        added = 0
+        missing = 0
+
+        for line in f:
+            line = line.strip()
+            if not line:
+                continue
+            fields = line.split("\t")
+            if len(fields) < 2:
+                continue
+            raw_name = fields[0]               
+            flag     = fields[1].strip()
+            #conver to bool 
+            is_homolog = (flag == "1")
+
+            # pan_1 to PAN1
+            pan_base = raw_name.split("_v")[0]
+            protein_name = pan_base.replace("_", "").upper()
+
+            # Retrieve protein instance
+            protein_inst = get_instance(onto, protein_name)
+            protein_inst.is_ecoli_homolog.append(is_homolog)
+            added += 1
+
+    logger.success(f"Annotated is_ecoli_homolog for {added} PanProtein instances.")
+
