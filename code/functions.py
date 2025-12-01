@@ -485,6 +485,7 @@ def export_panres2_tables(onto, outdir="."):
             "is_from_database": save_list(g.is_from_database),
             "same_as_OriginalGene": save_list(g.same_as),
             "is_discarded": 1 if g.is_discarded else 0, #binary 1=True, 0=False
+            "is_ecoli_homolog": 1 if g.is_ecoli_homolog else 0, #binary 1=True, 0=False
 
             "AntibioticResistanceMechanism": save_list(g.has_mechanism_of_resistance),
             "AntibioticResistanceClass": save_list(g.has_resistance_class),
