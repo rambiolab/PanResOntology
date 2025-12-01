@@ -70,6 +70,8 @@
     - **Description**: Represents an original protein.
   - Class: `PanProteinCluster`
     - **Description**: Represents a cluster of PanProteins.
+  - Class: `PanStructure`
+    - **Description**: Represents a 3D protein structure of PanProtein.
   - Class: `PanStructureCluster`
     - **Description**: Represents a cluster of 3D predicted PanProtein clusters.
 

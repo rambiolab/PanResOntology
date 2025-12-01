@@ -1,5 +1,5 @@
 from argparse import Namespace
-from git import Object
+#from git import Object
 from owlready2 import AnnotationProperty, Thing, FunctionalProperty, ObjectProperty, Or, AllDisjoint
 
 
@@ -138,6 +138,11 @@ def createModel(onto):
         range = [PanGene]
         namespace = onto
 
+    class is_discarded(ObjectProperty):
+        domain = [PanGene]
+        range = [DiscardedPanGene]
+        namespace = onto
+
     has_pan_name.inverse_property = same_as
     class gene_alt_name(OriginalGene >> str): 
         namespace = onto
@@ -179,6 +184,11 @@ def createModel(onto):
     class found_in(ObjectProperty):
         domain = [Or([AntibioticResistancePhenotype, Metal, Biocide, AntibioticResistanceClass, MetalClass, BiocideClass])]
         range = [Database]
+        namespace = onto
+
+    class is_ecoli_homolog(AnnotationProperty):
+        domain = [onto.PanProtein]       
+        range = [bool]                
         namespace = onto
 
     class AntimicrobialResistanceGene(PanGene): pass

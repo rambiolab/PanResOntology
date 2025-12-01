@@ -51,7 +51,6 @@ def get_or_create_instance(onto: Ontology, cls: Thing, name: str) -> Thing:
     
     # Construct the full IRI for the instance
     full_iri = onto.base_iri + name
-    
     # Search for the instance
     instance = onto.search_one(iri=full_iri)#"*{}".format(name))
     if instance is None:
@@ -330,7 +329,22 @@ def summarise_classes(onto: Ontology, class_name: str) -> pd.DataFrame:
 
 def get_annotations_of_individual(individual: Thing):
     """Get all annotations of an individual in the the ontology"""
-    return individual.get_annotations()
+    properties = {}
+    for p in individual.get_properties():
+        values = getattr(individual, p.name)
+        processed_values = []
+        
+        for v in values:
+            if isinstance(v, int):
+                processed_values = v
+            elif isinstance(v, str):
+                processed_values.append(v)
+            else:
+                processed_values.append(v.name)
+        
+        properties[p.name] = processed_values
+    
+    return properties
 
 def visualize_specific_classes(onto: Ontology, class_names: list, output_file: str ="specific_classes_visualization"):
     """
@@ -401,3 +415,116 @@ def get_genes_for_class(onto: Ontology, class_name: str) -> pd.DataFrame:
     df['resistance_class'] = df['resistance_class'].apply(lambda x: sorted([v.name for v in x]))
     df['resistance_phenotype'] = df['resistance_phenotype'].apply(lambda x: sorted([v.name for v in x]))
     return df
+
+def get_genes_for_class(onto, class_name):
+    
+    # instance
+    class_instance = onto.search(iri=f"*{class_name}")
+    
+    # get genes
+    genes = {
+        g.name: get_annotations_of_individual(g) for g in onto.PanGene.instances()
+    }
+    
+    # convert to dataframe
+    df = pd.DataFrame.from_dict(genes)
+    
+    # filter
+    mask = df.apply(lambda x: x.astype(str).str.contains(class_name))
+    hits = mask.any(axis=0)[mask.any(axis=0)].index.tolist()
+    
+    return df[hits].T
+
+def original_name_to_pan(onto, gene_name):
+    
+    gene_name = gene_name.replace("'", "")
+
+    # get original name instance
+    instance = onto.search(iri=f"*{gene_name}")
+    
+    if len(instance) == 0:
+        return None
+
+    pan_instance = instance[0].has_pan_name
+    if len(pan_instance) == 0:
+        return None
+    return pan_instance[0]
+
+# Export PanRes2 tables
+def save_list(lst):
+    return "|".join(x.name for x in lst) if lst else ""
+
+def export_panres2_tables(onto, outdir="."):
+    #map PanProtein to PanGene (inverse of translates_to)
+    protein_to_gene = {
+        p.name: g.name
+        for g in onto.PanGene.instances()
+        for p in g.translates_to
+    }
+
+    # map PanStructure to PanProteinCluster (inverse of folds_to)
+    structure_to_pcluster = {
+        s.name: pc.name
+        for pc in onto.PanProteinCluster.instances()
+        for s in pc.folds_to
+    }
+
+    
+    #PanGene table
+    rows = []
+    for g in onto.PanGene.instances():
+
+        gene_clusters = [c for c in g.member_of
+                         if c.__class__.__name__ == "PanGeneCluster"]
+
+        rows.append({
+            "PanGene": g.name,
+            "has_length": g.has_length[0] if g.has_length else "",
+            "member_of_PanGeneCluster": save_list(gene_clusters),
+
+            "is_from_database": save_list(g.is_from_database),
+            "same_as_OriginalGene": save_list(g.same_as),
+            "is_discarded": 1 if g.is_discarded else 0, #binary 1=True, 0=False
+            "is_ecoli_homolog": 1 if g.is_ecoli_homolog else 0, #binary 1=True, 0=False
+
+            "AntibioticResistanceMechanism": save_list(g.has_mechanism_of_resistance),
+            "AntibioticResistanceClass": save_list(g.has_resistance_class),
+            "AntibioticResistancePhenotype": save_list(g.has_predicted_phenotype)
+        })
+
+    pd.DataFrame(rows).to_csv(f"{outdir}/PanGenes.tsv", sep="\t", index=False)
+
+    # PanProtein table
+
+    protein_rows = []
+    for p in onto.PanProtein.instances():
+
+        protein_clusters = [c for c in p.member_of
+                            if c.__class__.__name__ == "PanProteinCluster"]
+
+        protein_rows.append({
+            "PanProtein": p.name,
+            "has_length": p.has_length[0] if p.has_length else "",
+            "translates_from_PanGene": protein_to_gene.get(p.name, ""),
+            "member_of_PanProteinCluster": save_list(protein_clusters),
+        })
+
+    pd.DataFrame(protein_rows).to_csv(f"{outdir}/PanProteins.tsv", sep="\t", index=False)
+
+    # PanStructure table
+
+    structure_rows = []
+    for s in onto.PanStructure.instances():
+
+        struct_clusters = [c for c in s.member_of
+                           if c.__class__.__name__ == "PanStructureCluster"]
+
+        structure_rows.append({
+            "PanStructure": s.name,
+            "folds_from_PanProteinCluster": structure_to_pcluster.get(s.name, ""),
+            "member_of_PanStructureCluster": save_list(struct_clusters),
+        })
+
+    pd.DataFrame(structure_rows).to_csv(f"{outdir}/PanStructures.tsv", sep="\t", index=False)
+
+    print("PanRes2 tables created.")

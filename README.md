@@ -1,4 +1,4 @@
-# PanRes Ontology
+# PanRes2 Ontology
 This GitHub repository contains the "ontologisation" of the annotations for the genes and proteins part of the PanRes collection. 
 
 **The OWL file can be found in the [ontology](/ontology/) folder: [panres_v2.owl](/ontology/panres_v2.owl)**
@@ -16,6 +16,7 @@ owlready2==0.44
 loguru==0.7.3
 pandas==1.5.3
 numpy==1.24.3
+
 ```
 
 ### Execute
@@ -32,11 +33,3 @@ Extended documentation on the classes and properties are described in the [model
 
 This figure shows the information structured in the ontology for the `pan_1` gene.
 ![Example of PanRes ontology](panres_ont_example.png)
-
-### Things to Implement
-- [ ] Finish the description of annotation properties in [model.md](docs/model.md).
-- [ ] Correctly link gene to protein translations.
-- [ ] Link PubMed IDs and accessions to all genes and proteins.
-- [ ] Link protein structures to ontology.
-- [ ] Setup schema for adding new information to the ontology
-- [ ] Review the "unclassified" classes of resistances and correctly place them.

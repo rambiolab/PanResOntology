@@ -8,6 +8,10 @@
 *.xslx
 *.html
 *.log
+*.png
+*.owl
+*Perrin*
+*/*Perrin*
 
 # folders
 /app
