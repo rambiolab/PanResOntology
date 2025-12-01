@@ -450,5 +450,80 @@ def original_name_to_pan(onto, gene_name):
         return None
     return pan_instance[0]
 
+# Export PanRes2 tables
+def save_list(lst):
+    return "|".join(x.name for x in lst) if lst else ""
 
- 
+def export_panres2_tables(onto, outdir="."):
+    #map PanProtein to PanGene (inverse of translates_to)
+    protein_to_gene = {
+        p.name: g.name
+        for g in onto.PanGene.instances()
+        for p in g.translates_to
+    }
+
+    # map PanStructure to PanProteinCluster (inverse of folds_to)
+    structure_to_pcluster = {
+        s.name: pc.name
+        for pc in onto.PanProteinCluster.instances()
+        for s in pc.folds_to
+    }
+
+    
+    #PanGene table
+    rows = []
+    for g in onto.PanGene.instances():
+
+        gene_clusters = [c for c in g.member_of
+                         if c.__class__.__name__ == "PanGeneCluster"]
+
+        rows.append({
+            "PanGene": g.name,
+            "has_length": g.has_length[0] if g.has_length else "",
+            "member_of_PanGeneCluster": save_list(gene_clusters),
+
+            "is_from_database": save_list(g.is_from_database),
+            "same_as_OriginalGene": save_list(g.same_as),
+            "is_discarded": 1 if g.is_discarded else 0, #binary 1=True, 0=False
+
+            "AntibioticResistanceMechanism": save_list(g.has_mechanism_of_resistance),
+            "AntibioticResistanceClass": save_list(g.has_resistance_class),
+            "AntibioticResistancePhenotype": save_list(g.has_predicted_phenotype)
+        })
+
+    pd.DataFrame(rows).to_csv(f"{outdir}/PanGenes.tsv", sep="\t", index=False)
+
+    # PanProtein table
+
+    protein_rows = []
+    for p in onto.PanProtein.instances():
+
+        protein_clusters = [c for c in p.member_of
+                            if c.__class__.__name__ == "PanProteinCluster"]
+
+        protein_rows.append({
+            "PanProtein": p.name,
+            "has_length": p.has_length[0] if p.has_length else "",
+            "translates_from_PanGene": protein_to_gene.get(p.name, ""),
+            "member_of_PanProteinCluster": save_list(protein_clusters),
+        })
+
+    pd.DataFrame(protein_rows).to_csv(f"{outdir}/PanProteins.tsv", sep="\t", index=False)
+
+    # PanStructure table
+
+    structure_rows = []
+    for s in onto.PanStructure.instances():
+
+        struct_clusters = [c for c in s.member_of
+                           if c.__class__.__name__ == "PanStructureCluster"]
+
+        structure_rows.append({
+            "PanStructure": s.name,
+            "folds_from_PanProteinCluster": structure_to_pcluster.get(s.name, ""),
+            "member_of_PanStructureCluster": save_list(struct_clusters),
+        })
+
+    pd.DataFrame(structure_rows).to_csv(f"{outdir}/PanStructures.tsv", sep="\t", index=False)
+
+    print("PanRes2 tables created.")
