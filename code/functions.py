@@ -1,7 +1,7 @@
 import subprocess
 from owlready2 import *
 import pandas as pd
-#from graphviz import Digraph
+from graphviz import Digraph
 from IPython.display import Image, display
 
 def get_instance(onto: Ontology, name: str) -> Thing:
