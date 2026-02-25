@@ -1,5 +1,5 @@
 # PanRes2 Ontology
-This GitHub repository contains the "ontologisation" of the annotations for the genes and proteins part of the PanRes collection. 
+This GitHub repository contains the "ontologisation" of the annotations for the genes and proteins part of the PanRes2 collection. 
 
 **The OWL file can be found in the [ontology](/ontology/) folder: [panres_v2.owl](/ontology/panres_v2.owl)**
 

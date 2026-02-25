@@ -628,7 +628,7 @@ pan_13163	672	pan_cl13163	CsabaPal	chryso-caaatgaaat_gtcgtgcgat_3	0	0		Aminoglyc
 pan_10305	1260	pan_cl12056	ResFinderFG	KJ695023.1	0	0		Tetracycline		AntimicrobialResistanceGene
 pan_976	1164	pan_cl976	AMRFinderPlus|ARGANNOT|CARD|MegaRes|ResFinder	tet(51)|Tet(51)|TET51|tet(51)_1_KR857685	0	0	Enzymatic_Inactivation	Tetracycline		AntimicrobialResistanceGene
 pan_8774	675	pan_cl12895	ResFinderFG	KF629607.1	0	0		Phenicol	Chloramphenicol	AntimicrobialResistanceGene
-pan_4173	3168	pan_cl4173	CARD|MegaRes|MetalRes	mdsB|GESB|gesB_AAL19305.1	0	0	Antibiotic_Efflux	Beta_Lactam|Phenicol	Carbapenem|Cephalosporin|Cephamycin|Monobactam|Penam|Penem|Gold	AntimicrobialResistanceGene|MetalResistanceGene
+pan_4173	3168	pan_cl4173	CARD|MegaRes|MetalRes	mdsB|GESB|gesB_AAL19305.1	0	0	Antibiotic_Efflux	Beta_Lactam|Phenicol	Carbapenem|Cephalosporin|Cephamycin|Monobactam|Penam|Penem|Gold	MetalResistanceGene|AntimicrobialResistanceGene
 pan_2185	861	pan_cl13214	AMRFinderPlus|CARD|MegaRes|ResFinder	TEM|blaTEM-224|TEM-224|blaTEM-224_1_KU664545	0	0	Enzymatic_Inactivation|Antibiotic_Inactivation	Beta_Lactam	Cephalosporin|Monobactam|Penam|Penem	AntimicrobialResistanceGene
 pan_4221	825	pan_cl2471	AMRFinderPlus|CARD|MegaRes	OXA|blaOXA-652|OXA-652	0	0	Antibiotic_Inactivation	Beta_Lactam	Carbapenem|Cephalosporin|Penam	AntimicrobialResistanceGene
 pan_3538	1194	pan_cl3161	AMRFinderPlus|CARD|MegaRes	PDC|blaPDC-383|PDC-383	0	0	Antibiotic_Inactivation	Beta_Lactam	Carbapenem|Cephalosporin|Monobactam	AntimicrobialResistanceGene
@@ -1061,7 +1061,7 @@ pan_289	882	pan_cl289	AMRFinderPlus|ARGANNOT|CARD|MegaRes|ResFinder	blaERP-1|ERP
 pan_3561	1194	pan_cl3911	AMRFinderPlus|CARD|MegaRes	PDC|blaPDC-440|PDC-440	0	0	Antibiotic_Inactivation	Beta_Lactam	Carbapenem|Cephalosporin|Monobactam	AntimicrobialResistanceGene
 pan_7436	780	pan_cl8603	MegaRes	SRPS	0	0				
 pan_10332	942	pan_cl10332	ResFinderFG	KJ694863.1	0	0		Antimycobacterial	D_Cycloserine	AntimicrobialResistanceGene
-pan_2747	465	pan_cl2747	CARD|MegaRes|MetalRes	golS|GOLS|golS_AAL19308.1	0	0	Antibiotic_Efflux	Beta_Lactam|Phenicol	Carbapenem|Cephalosporin|Cephamycin|Monobactam|Penam|Penem|Gold	AntimicrobialResistanceGene|MetalResistanceGene
+pan_2747	465	pan_cl2747	CARD|MegaRes|MetalRes	golS|GOLS|golS_AAL19308.1	0	0	Antibiotic_Efflux	Beta_Lactam|Phenicol	Carbapenem|Cephalosporin|Cephamycin|Monobactam|Penam|Penem|Gold	MetalResistanceGene|AntimicrobialResistanceGene
 pan_1329	882	pan_cl6752	AMRFinderPlus|ARGANNOT|CARD|MegaRes|ResFinder	KPC|blaKPC-2|KPC-2|blaKPC-2_1_AY034847	0	0	Enzymatic_Inactivation|Antibiotic_Inactivation	Beta_Lactam	Cefepime|Meropenem|Ampicillin|Ertapenem|Ampicillin+Clavulanic_Acid|Ceftazidime|Imipenem|Piperacillin|Ticarcillin|Aztreonam|Amoxicillin+Clavulanic_Acid|Cefoxitin|Piperacillin+Tazobactam|Cefotaxime|Amoxicillin|Ticarcillin+Clavulanic_Acid|Carbapenem|Cephalosporin|Monobactam|Penam	AntimicrobialResistanceGene
 pan_99	1146	pan_cl3390	AMRFinderPlus|ARGANNOT|CARD|MegaRes|ResFinder	MIR|blaMIR-6|MIR-6|blaMIR-6_1_JQ664733	0	0	Enzymatic_Inactivation|Antibiotic_Inactivation	Beta_Lactam	Ampicillin|Ticarcillin|Ampicillin+Clavulanic_Acid|Ceftazidime|Piperacillin|Amoxicillin+Clavulanic_Acid|Cefoxitin|Piperacillin+Tazobactam|Cefotaxime|Amoxicillin|Ticarcillin+Clavulanic_Acid|Cephalosporin|Monobactam	AntimicrobialResistanceGene
 pan_10032	894	pan_cl9001	ResFinderFG	KJ695701.1	0	0		Beta_Lactam	Piperacillin	AntimicrobialResistanceGene
@@ -1495,7 +1495,7 @@ pan_11466	1149	pan_cl4837	AMRFinderPlus	blaFOX-18	0	0		Beta_Lactam		Antimicrobia
 pan_1439	822	pan_cl12638	AMRFinderPlus|ARGANNOT|CARD|MegaRes	OXA|blaOXA-808|OXA-808	0	0	Antibiotic_Inactivation	Beta_Lactam	Carbapenem|Cephalosporin|Penam	AntimicrobialResistanceGene
 pan_13240	789	pan_cl2888	AMRFinderPlus	blaOXA-1129	0	0		Beta_Lactam		AntimicrobialResistanceGene
 pan_14065	543	pan_cl14065	ResFinderFG	KJ695232.1	0	0		Folate_Pathway_Antagonist	Trimethoprim	AntimicrobialResistanceGene
-pan_4162	1227	pan_cl4162	CARD|MegaRes|MetalRes	mdsA|GESA|gesA_AAL19306.1	0	0	Antibiotic_Efflux	Beta_Lactam|Phenicol	Carbapenem|Cephalosporin|Cephamycin|Monobactam|Penam|Penem|Gold	AntimicrobialResistanceGene|MetalResistanceGene
+pan_4162	1227	pan_cl4162	CARD|MegaRes|MetalRes	mdsA|GESA|gesA_AAL19306.1	0	0	Antibiotic_Efflux	Beta_Lactam|Phenicol	Carbapenem|Cephalosporin|Cephamycin|Monobactam|Penam|Penem|Gold	MetalResistanceGene|AntimicrobialResistanceGene
 pan_5721	432	pan_cl6319	AMRFinderPlus|MegaRes	AAC6-PRIME|aac(6)_Yersi	0	0		Aminoglycoside		AntimicrobialResistanceGene
 pan_7425	861	pan_cl1266	MegaRes	SHV	0	0		Beta_Lactam		AntimicrobialResistanceGene
 pan_12733	1167	pan_cl13505	ResFinderFG	KF627274.1	0	0		Beta_Lactam	Penicillin	AntimicrobialResistanceGene
@@ -7547,7 +7547,7 @@ pan_7867	891	pan_cl13478	ResFinderFG	KF627250.1	0	0		Beta_Lactam	Aztreonam	Antim
 pan_4676	1194	pan_cl3911	AMRFinderPlus|CARD|MegaRes	PDC|blaPDC-196|PDC-196	0	0	Antibiotic_Inactivation	Beta_Lactam	Carbapenem|Cephalosporin|Monobactam	AntimicrobialResistanceGene
 pan_10338	1137	pan_cl10338	ResFinderFG	JX009233.1	0	0		Beta_Lactam	Carbenicillin	AntimicrobialResistanceGene
 pan_2730	1146	pan_cl12078	AMRFinderPlus|CARD|MegaRes	ACT|blaACT-74|ACT-74	0	0	Antibiotic_Inactivation	Beta_Lactam	Carbapenem|Cephalosporin|Cephamycin|Penam	AntimicrobialResistanceGene
-pan_6900	582	pan_cl6900	MegaRes|MetalRes	SODB|sodB_BAA15422.1	0	0		Peroxide	Selenium	BiocideResistanceGene|MetalResistanceGene
+pan_6900	582	pan_cl6900	MegaRes|MetalRes	SODB|sodB_BAA15422.1	0	0		Peroxide	Selenium	MetalResistanceGene|BiocideResistanceGene
 pan_4642	825	pan_cl1911	AMRFinderPlus|CARD|MegaRes	OXA|blaOXA-713|OXA-713	0	0	Antibiotic_Inactivation	Beta_Lactam	Carbapenem|Cephalosporin|Penam	AntimicrobialResistanceGene
 pan_640	1143	pan_cl9580	AMRFinderPlus|ARGANNOT|CARD|MegaRes|ResFinder	CMY|blaCMY-61|CMY-61|blaCMY-61_1_JF460795	0	0	Enzymatic_Inactivation|Antibiotic_Inactivation	Beta_Lactam	Ampicillin|Ticarcillin|Ampicillin+Clavulanic_Acid|Ceftazidime|Piperacillin|Amoxicillin+Clavulanic_Acid|Cefoxitin|Piperacillin+Tazobactam|Cefotaxime|Amoxicillin|Ticarcillin+Clavulanic_Acid|Cephamycin	AntimicrobialResistanceGene
 pan_2818	1257	pan_cl4937	AMRFinderPlus|CARD|MegaRes	mgt|mgtA|MGT	0	0	Antibiotic_Inactivation	Macrolide		AntimicrobialResistanceGene
@@ -7579,7 +7579,7 @@ pan_10462	981	pan_cl13594	ResFinderFG	KX128798.1	0	0		Antimycobacterial	D_Cyclos
 pan_5650	537	pan_cl1040	AMRFinderPlus|MegaRes	AAC6-PRIME|aac(6)-Im	0	0		Aminoglycoside		AntimicrobialResistanceGene
 pan_8739	1920	pan_cl10153	ResFinderFG	KX125698.1	0	0		Tetracycline		AntimicrobialResistanceGene
 pan_12023	579	pan_cl12023	CsabaPal	chryso-ctgaagtgga_cgaatgcgca_1	0	0		Tetracycline|Fluoroquinolone	Omadacycline|Delafloxacin|Eravacycline|Doxycycline	AntimicrobialResistanceGene
-pan_2872	723	pan_cl2872	CARD|MegaRes|MetalRes	baeR|BAER|baeR_BAA15935.1	0	0	Antibiotic_Efflux	Aminocoumarin|Aminoglycoside	Zinc|Tungsten	AntimicrobialResistanceGene|MetalResistanceGene
+pan_2872	723	pan_cl2872	CARD|MegaRes|MetalRes	baeR|BAER|baeR_BAA15935.1	0	0	Antibiotic_Efflux	Aminocoumarin|Aminoglycoside	Zinc|Tungsten	MetalResistanceGene|AntimicrobialResistanceGene
 pan_6873	1878	pan_cl6873	MegaRes|MetalRes	DNAK|dnaK_AAK44587.1	0	0			Copper	MetalResistanceGene
 pan_676	1146	pan_cl9580	AMRFinderPlus|ARGANNOT|CARD|MegaRes|ResFinder	CMY|blaCMY-106|CMY-106|blaCMY-106_1_KM983294	0	0	Enzymatic_Inactivation|Antibiotic_Inactivation	Beta_Lactam	Ampicillin|Ticarcillin|Ampicillin+Clavulanic_Acid|Ceftazidime|Piperacillin|Amoxicillin+Clavulanic_Acid|Cefoxitin|Piperacillin+Tazobactam|Cefotaxime|Amoxicillin|Ticarcillin+Clavulanic_Acid|Cephamycin	AntimicrobialResistanceGene
 pan_2324	861	pan_cl13214	AMRFinderPlus|CARD|MegaRes|ResFinder	TEM|blaTEM-102|TEM-102|blaTEM-102_1_AY040093	0	0	Enzymatic_Inactivation|Antibiotic_Inactivation	Beta_Lactam	Cefepime|Ampicillin|Ticarcillin|Ceftazidime|Ceftriaxone|Piperacillin|Aztreonam|Cefotaxime|Amoxicillin|Cephalosporin|Monobactam|Penam|Penem	AntimicrobialResistanceGene
@@ -7605,7 +7605,7 @@ pan_10649	795	pan_cl10649	AMRFinderPlus	blaOXA-1153	0	0		Beta_Lactam		Antimicrob
 pan_4947	339	pan_cl4947	CARD|MegaRes	YajC|YAJC	0	0	Antibiotic_Efflux	Beta_Lactam|Disinfecting_Agents_And_Antiseptics|Fluoroquinolone|Glycopeptide|Tetracycline|Oxazolidinone|Phenicol|Rifamycin	Cephalosporin|Glycylcycline|Penam	AntimicrobialResistanceGene|BiocideResistanceGene
 pan_4012	876	pan_cl6071	AMRFinderPlus|CARD|MegaRes	CTX|blaCTX-M-140|CTX-M-140	0	0	Antibiotic_Inactivation	Beta_Lactam	Cephalosporin	AntimicrobialResistanceGene
 pan_8392	798	pan_cl8392	CsabaPal	chryso-cgcctcctcg_acattttgtt_3	0	0		Aminoglycoside	Gentamicin	AntimicrobialResistanceGene
-pan_6463	621	pan_cl5844	MegaRes|MetalRes	SODA|sodA_CAA27580.1	0	0		Peroxide	Selenium	BiocideResistanceGene|MetalResistanceGene
+pan_6463	621	pan_cl5844	MegaRes|MetalRes	SODA|sodA_CAA27580.1	0	0		Peroxide	Selenium	MetalResistanceGene|BiocideResistanceGene
 pan_12536	489	pan_cl12536	ResFinderFG	KU547444.1	0	0		Tetracycline		AntimicrobialResistanceGene
 pan_2503	822	pan_cl1776	AMRFinderPlus|CARD|MegaRes|ResFinder	OXA|blaOXA-501|OXA-501|blaOXA-501_1_KU167110	0	0	Enzymatic_Inactivation|Antibiotic_Inactivation	Beta_Lactam	Carbapenem|Cephalosporin|Penam	AntimicrobialResistanceGene
 pan_1807	882	pan_cl6752	AMRFinderPlus|CARD|MegaRes|ResFinder	KPC|blaKPC-18|KPC-18|blaKPC-18_1_KT884517	0	0	Enzymatic_Inactivation|Antibiotic_Inactivation	Beta_Lactam	Cefepime|Meropenem|Ampicillin|Ertapenem|Ampicillin+Clavulanic_Acid|Ceftazidime|Imipenem|Piperacillin|Ticarcillin|Aztreonam|Amoxicillin+Clavulanic_Acid|Cefoxitin|Piperacillin+Tazobactam|Cefotaxime|Amoxicillin|Ticarcillin+Clavulanic_Acid|Carbapenem|Cephalosporin|Monobactam|Penam	AntimicrobialResistanceGene
@@ -8944,7 +8944,7 @@ pan_3446	861	pan_cl13214	AMRFinderPlus|MegaRes|ResFinder	TEM|blaTEM-213|blaTEM-2
 pan_6568	633	pan_cl5595	AMRFinderPlus|MegaRes	CATB|catB3	0	0		Phenicol		AntimicrobialResistanceGene
 pan_3414	882	pan_cl3414	AMRFinderPlus|CARD|MegaRes	blaS|blaS1|BLAS	0	0	Antibiotic_Inactivation	Beta_Lactam	Cephalosporin|Cephamycin|Penam	AntimicrobialResistanceGene
 pan_6394	792	pan_cl5131	AMRFinderPlus|MegaRes	ANT3-DPRIME|aadA1	0	0		Aminoglycoside		AntimicrobialResistanceGene
-pan_4311	1404	pan_cl4311	CARD|MegaRes|MetalRes	BAES|baeS|baeS_BAA15934.1	0	0	Antibiotic_Efflux	Aminocoumarin|Aminoglycoside	Zinc|Tungsten	AntimicrobialResistanceGene|MetalResistanceGene
+pan_4311	1404	pan_cl4311	CARD|MegaRes|MetalRes	BAES|baeS|baeS_BAA15934.1	0	0	Antibiotic_Efflux	Aminocoumarin|Aminoglycoside	Zinc|Tungsten	MetalResistanceGene|AntimicrobialResistanceGene
 pan_4750	888	pan_cl6752	AMRFinderPlus|CARD|MegaRes	KPC|blaKPC-25|KPC-25	0	0	Antibiotic_Inactivation	Beta_Lactam	Carbapenem|Cephalosporin|Monobactam|Penam	AntimicrobialResistanceGene
 pan_8247	801	pan_cl12643	AMRFinderPlus	blaOXA-1053	0	0		Beta_Lactam		AntimicrobialResistanceGene
 pan_11732	525	pan_cl11732	ResFinderFG	KT387205.1	0	0		Folate_Pathway_Antagonist	Trimethoprim	AntimicrobialResistanceGene
@@ -9027,7 +9027,7 @@ pan_1802	855	pan_cl1802	AMRFinderPlus|ARGANNOT|CARD|MegaRes	OXA|blaOXA-666|OXA-6
 pan_6282	441	pan_cl5357	AMRFinderPlus|MegaRes	AAC6-PRIME|aac(6)_Serra	0	0		Aminoglycoside		AntimicrobialResistanceGene
 pan_11854	921	pan_cl10956	ResFinderFG	GQ343153.1	0	0		Beta_Lactam	Penicillin	AntimicrobialResistanceGene
 pan_2067	822	pan_cl2276	AMRFinderPlus|CARD|MegaRes|ResFinder	OXA|blaOXA-327|OXA-327|blaOXA-327_1_KF203101	0	0	Enzymatic_Inactivation|Antibiotic_Inactivation	Beta_Lactam	Carbapenem|Cephalosporin|Penam	AntimicrobialResistanceGene
-pan_5844	621	pan_cl5844	MegaRes|MetalRes	SODA|sodA_BAE77401.1	0	0		Peroxide	Selenium	BiocideResistanceGene|MetalResistanceGene
+pan_5844	621	pan_cl5844	MegaRes|MetalRes	SODA|sodA_BAE77401.1	0	0		Peroxide	Selenium	MetalResistanceGene|BiocideResistanceGene
 pan_8555	903	pan_cl13425	ResFinderFG	KU547663.1	0	0		Beta_Lactam	Amoxycillin	AntimicrobialResistanceGene
 pan_13226	900	pan_cl2105	AMRFinderPlus	blaVEB-30	0	0		Beta_Lactam		AntimicrobialResistanceGene
 pan_6979	2481	pan_cl6810	MegaRes|MetalRes	AIOA|aioA/aoxB_CAL60690.1	0	0			Arsenic	MetalResistanceGene
@@ -11514,7 +11514,7 @@ pan_10908	498	pan_cl10908	ResFinderFG	KJ693777.1	0	0		Folate_Pathway_Antagonist	
 pan_8993	999	pan_cl13849	ResFinderFG	KJ695917.1	0	0		Antimycobacterial	D_Cycloserine	AntimicrobialResistanceGene
 pan_5098	876	pan_cl2493	ARGANNOT|MegaRes	CTX|blaCTX-M-61	0	0		Beta_Lactam		AntimicrobialResistanceGene
 pan_5075	2484	pan_cl7013	MegaRes|MetalRes	ACTP|actP_ABR63681.1	0	0			Copper|Zinc	MetalResistanceGene
-pan_4322	3090	pan_cl4322	CARD|MegaRes|MetalRes	MexI|MEXI|mexI_AAG07594.1	0	0	Antibiotic_Efflux	Disinfecting_Agents_And_Antiseptics|Fluoroquinolone|Tetracycline	Vanadium	AntimicrobialResistanceGene|MetalResistanceGene|BiocideResistanceGene
+pan_4322	3090	pan_cl4322	CARD|MegaRes|MetalRes	MexI|MEXI|mexI_AAG07594.1	0	0	Antibiotic_Efflux	Disinfecting_Agents_And_Antiseptics|Fluoroquinolone|Tetracycline	Vanadium	MetalResistanceGene|AntimicrobialResistanceGene|BiocideResistanceGene
 pan_3329	801	pan_cl11571	AMRFinderPlus|CARD|MegaRes	VIM|blaVIM-53|VIM-53	0	0	Antibiotic_Inactivation	Beta_Lactam	Carbapenem|Cephalosporin|Cephamycin|Penam|Penem	AntimicrobialResistanceGene
 pan_4675	882	pan_cl4675	AMRFinderPlus|CARD|ResFinder	blaPAU-1|PAU-1|blaPAU-1_1_MH053445	0	0	Enzymatic_Modification|Antibiotic_Inactivation	Beta_Lactam	Ampicillin|Amoxicillin|Piperacillin|Carbapenem|Cephalosporin	AntimicrobialResistanceGene
 pan_13165	651	pan_cl13165	CsabaPal	chryso-atgccaacag_gctgttcaat_2	0	0		Polymyxin	Polymyxin_B	AntimicrobialResistanceGene
