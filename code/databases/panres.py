@@ -199,8 +199,8 @@ def add_panres_proteins(file: str, clstrs: str, struct_clstrs: str, onto: Ontolo
         Path to the faa file containing PanRes protein sequences.
     clstrs : str
         Path to the clstr file containing PanRes protein clusters, as determined by CD-HIT.
-    3dclstrs : str
-        Path to the clustering.out file containing PanRes 3D protein clusters, as determined by clustering.py
+    struct_clstrs : str
+        Path to the clustering.out file containing PanRes 3D protein clusters, as determined by Foldseek easy-cluster.
     onto : Ontology
         The ontology to load the protein information into
     logger : loguru.logger

@@ -454,6 +454,18 @@ def original_name_to_pan(onto, gene_name):
 def save_list(lst):
     return "|".join(x.name for x in lst) if lst else ""
 
+def get_resistance_category(gene):
+    types = set()
+    for cls in gene.is_a:
+        for anc in cls.ancestors():
+            if anc.__name__ in [
+                "AntimicrobialResistanceGene",
+                "BiocideResistanceGene",
+                "MetalResistanceGene"
+            ]:
+                types.add(anc)   # ← return CLASS object, not string
+    return list(types)
+
 def export_panres2_tables(onto, outdir="."):
     #map PanProtein to PanGene (inverse of translates_to)
     protein_to_gene = {
@@ -489,7 +501,8 @@ def export_panres2_tables(onto, outdir="."):
 
             "AntibioticResistanceMechanism": save_list(g.has_mechanism_of_resistance),
             "AntibioticResistanceClass": save_list(g.has_resistance_class),
-            "AntibioticResistancePhenotype": save_list(g.has_predicted_phenotype)
+            "AntibioticResistancePhenotype": save_list(g.has_predicted_phenotype),
+            "ResistanceType": save_list(get_resistance_category(g))
         })
 
     pd.DataFrame(rows).to_csv(f"{outdir}/PanGenes.tsv", sep="\t", index=False)
