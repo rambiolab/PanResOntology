@@ -467,7 +467,7 @@ def get_resistance_category(gene):
     return list(types)
 
 def export_panres2_tables(onto, outdir="."):
-    #map PanProtein to PanGene (inverse of translates_to)
+    # map PanProtein to PanGene (inverse of translates_to)
     protein_to_gene = {
         p.name: g.name
         for g in onto.PanGene.instances()
@@ -481,13 +481,14 @@ def export_panres2_tables(onto, outdir="."):
         for s in pc.folds_to
     }
 
-    
-    #PanGene table
+    # PanGene table
     rows = []
     for g in onto.PanGene.instances():
 
-        gene_clusters = [c for c in g.member_of
-                         if c.__class__.__name__ == "PanGeneCluster"]
+        gene_clusters = [
+            c for c in g.member_of
+            if c.__class__.__name__ == "PanGeneCluster"
+        ]
 
         rows.append({
             "PanGene": g.name,
@@ -496,8 +497,7 @@ def export_panres2_tables(onto, outdir="."):
 
             "is_from_database": save_list(g.is_from_database),
             "same_as_OriginalGene": save_list(g.same_as),
-            "is_discarded": 1 if g.is_discarded else 0, #binary 1=True, 0=False
-            "is_ecoli_homolog": 1 if g.is_ecoli_homolog else 0, #binary 1=True, 0=False
+            "is_discarded": 1 if any(g.is_discarded) else 0,
 
             "AntibioticResistanceMechanism": save_list(g.has_mechanism_of_resistance),
             "AntibioticResistanceClass": save_list(g.has_resistance_class),
@@ -508,29 +508,32 @@ def export_panres2_tables(onto, outdir="."):
     pd.DataFrame(rows).to_csv(f"{outdir}/PanGenes.tsv", sep="\t", index=False)
 
     # PanProtein table
-
     protein_rows = []
     for p in onto.PanProtein.instances():
 
-        protein_clusters = [c for c in p.member_of
-                            if c.__class__.__name__ == "PanProteinCluster"]
+        protein_clusters = [
+            c for c in p.member_of
+            if c.__class__.__name__ == "PanProteinCluster"
+        ]
 
         protein_rows.append({
             "PanProtein": p.name,
             "has_length": p.has_length[0] if p.has_length else "",
             "translates_from_PanGene": protein_to_gene.get(p.name, ""),
             "member_of_PanProteinCluster": save_list(protein_clusters),
+            "is_ecoli_homolog": 1 if any(p.is_ecoli_homolog) else 0,
         })
 
     pd.DataFrame(protein_rows).to_csv(f"{outdir}/PanProteins.tsv", sep="\t", index=False)
 
     # PanStructure table
-
     structure_rows = []
     for s in onto.PanStructure.instances():
 
-        struct_clusters = [c for c in s.member_of
-                           if c.__class__.__name__ == "PanStructureCluster"]
+        struct_clusters = [
+            c for c in s.member_of
+            if c.__class__.__name__ == "PanStructureCluster"
+        ]
 
         structure_rows.append({
             "PanStructure": s.name,
