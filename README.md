@@ -6,6 +6,8 @@ This GitHub repository contains the "ontologisation" of the annotations for the 
 ## Working With the Ontology
 There are a few examples of querying the PanRes ontology in the [notebooks folder](/notebooks), specifically the Jupyter Notebook [Queries.ipynb](/notebooks/Queries.ipynb).
 
+The ontology can also be browsed in web version: https://panres.rambio.dk/ 
+
 ## Building The Ontology From Scratch
 In order to build the ontology with the genes included in the first version of PanRes, make sure to have the data files downloaded as well (see [data/](/data)).
 
