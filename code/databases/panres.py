@@ -43,6 +43,28 @@ def discarded_genes(discarded_list: str, onto: Ontology):
     
     return discarded
 
+def discarded_structures(discarded_list: str, onto: Ontology):
+    """Read a list of discarded structures from a file and return them as a list."""
+
+    with open(discarded_list, 'r') as f:
+        discarded = [l.strip() for l in f.readlines() if l.strip()]
+
+    for ds in discarded:
+        onto.DiscardedPanStructure(ds)
+
+    return discarded
+
+def discarded_structure_clusters(discarded_list: str, onto: Ontology):
+    """Read a list of discarded structure clusters from a file and return them as a list."""
+
+    with open(discarded_list, 'r') as f:
+        discarded = [l.strip() for l in f.readlines() if l.strip()]
+
+    for dsc in discarded:
+        onto.DiscardedPanStructureCluster(dsc)
+
+    return discarded
+
 def add_panres_genes(file: str, uc_file: str, onto: Ontology, discarded: str, logger = logger):
     """Add PanRes genes to the ontology
 
@@ -190,7 +212,7 @@ def add_panres_genes(file: str, uc_file: str, onto: Ontology, discarded: str, lo
     logger.success(f"Added {len(clusters)} PanGeneCluster instances.")
 
 
-def add_panres_proteins(file: str, clstrs: str, struct_clstrs: str, onto: Ontology, logger):
+def add_panres_proteins(file: str, clstrs: str, struct_clstrs: str, onto: Ontology, discarded_structures_file: str, discarded_structure_clusters_file: str, logger):
     """Adds PanRes proteins and their clusters to the ontology.
 
     Parameters
@@ -206,6 +228,9 @@ def add_panres_proteins(file: str, clstrs: str, struct_clstrs: str, onto: Ontolo
     logger : loguru.logger
         Logger object for logging messages
     """
+
+    discarded_structures_list = discarded_structures(discarded_structures_file, onto=onto)
+    discarded_structure_clusters_list = discarded_structure_clusters(discarded_structure_clusters_file, onto=onto)
 
     # Grep all headers of the protein sequences and extract them
     #p = subprocess.run(f"grep '>' {file}", shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -237,11 +262,12 @@ def add_panres_proteins(file: str, clstrs: str, struct_clstrs: str, onto: Ontolo
     # Log the successfull addition  of proteins
     logger.success("Added PanRes proteins to the ontology.")
 
-    # Read the CD-HIT output file to extract cluster information
+   # Read the CD-HIT output file to extract cluster information
     p = re.compile(r">(pan\_\d+)")
     clusters = defaultdict(list)
     cluster_representative = None
     members = []
+
     with open(clstrs, 'r') as f:
         for l in f.readlines():
             l = l.strip()
@@ -252,14 +278,19 @@ def add_panres_proteins(file: str, clstrs: str, struct_clstrs: str, onto: Ontolo
                 if cluster_representative is not None:
                     clusters[cluster_representative] = members
                     members, cluster_representative = [], None
-            # Else identify the cluster representative and it to the member list
+
+            # Identify the cluster representative
             elif m and l.endswith('*'):
                 cluster_representative = m[0]
                 members.append(m[0])
+
             # Add members to the current cluster
-            else:
+            elif m:
                 members.append(m[0])
 
+    # IMPORTANT: save the last cluster
+    if cluster_representative is not None:
+        clusters[cluster_representative] = members
     # Loop through each cluster and add it to the ontology
     for cl, cl_members in clusters.items():
         cl = cl.replace('pan_', 'PANCL')
@@ -288,6 +319,14 @@ def add_panres_proteins(file: str, clstrs: str, struct_clstrs: str, onto: Ontolo
         num = m.group(1)
         struct_name = f"PAN{num}_struct"
         structure_instance = get_or_create_instance(onto=onto, cls=onto.PanStructure, name=struct_name)
+
+        if struct_name in discarded_structures_list:
+            structure_instance.is_discarded.append(
+                onto.DiscardedPanStructure(struct_name)
+            )
+            logger.warning(
+                f"PanRes: {struct_name} has been marked as discarded from the PanRes database."
+            )
         
         #link protein cluster to its structure
         cl = f"PANCL{num}"
@@ -323,12 +362,25 @@ def add_panres_proteins(file: str, clstrs: str, struct_clstrs: str, onto: Ontolo
 
         # Create structure cluster
         struct_cluster_name = f"PANCL{num}_struct"
-        struct_cluster_instance = get_or_create_instance(onto=onto,cls=onto.PanStructureCluster,name=struct_cluster_name)
-        
-        # Link number of members to each cluster
-        struct_cluster_instance.has_members.append(str(len(struct_members)))
+        struct_cluster_instance = get_or_create_instance(
+            onto=onto,
+            cls=onto.PanStructureCluster,
+            name=struct_cluster_name
+        )
 
-        # Link each structure member to its cluster
+        # If the entire structure cluster is discarded, mark it and skip active membership
+        if struct_cluster_name in discarded_structure_clusters_list:
+            struct_cluster_instance.is_discarded.append(
+                onto.DiscardedPanStructureCluster(struct_cluster_name)
+            )
+            logger.warning(
+                f"PanRes: {struct_cluster_name} has been marked as discarded from the PanRes database."
+            )
+            continue
+
+        retained_members = []
+
+        # Link each retained structure member to its cluster
         for mem in struct_members:
             mm = re.match(r"pan_(\d+)", mem)
             if not mm:
@@ -336,10 +388,28 @@ def add_panres_proteins(file: str, clstrs: str, struct_clstrs: str, onto: Ontolo
             mnum = mm.group(1)
             mem_struct_name = f"PAN{mnum}_struct"
 
-            member_struct_instance = get_or_create_instance(onto=onto, cls=onto.PanStructure, name=mem_struct_name)
+            member_struct_instance = get_or_create_instance(
+                onto=onto,
+                cls=onto.PanStructure,
+                name=mem_struct_name
+            )
 
-            # link structure → structure cluster
+            # Discarded structures remain represented but are not active cluster members
+            if mem_struct_name in discarded_structures_list:
+                member_struct_instance.is_discarded.append(
+                    onto.DiscardedPanStructure(mem_struct_name)
+                )
+                logger.warning(
+                    f"PanRes: {mem_struct_name} has been marked as discarded from the PanRes database."
+                )
+                continue
+
+            # Link retained structure → structure cluster
             member_struct_instance.member_of.append(struct_cluster_instance)
+            retained_members.append(mem_struct_name)
+
+        # Store the number of retained active members
+        struct_cluster_instance.has_members.append(str(len(retained_members)))
 
     logger.success("Added PanRes 3D structure clusters to the ontology.")
 

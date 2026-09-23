@@ -33,6 +33,7 @@ def createModel(onto):
     class DiscardedPanGene(PanGene):
         description = "An identifier for PanGenes that have been discarded from the current version of the PanRes database"
 
+
     class PanGeneCluster(Gene): pass
 
     # Need a disjoint relationship between PanGene and OriginalGene individuals
@@ -85,6 +86,12 @@ def createModel(onto):
 
     class PanStructureCluster(Structure): pass
     class PanStructure(Structure): pass
+
+    class DiscardedPanStructure(PanStructure):
+        description = "An identifier for PanStructures that have been discarded from the current version of the PanRes database"
+
+    class DiscardedPanStructureCluster(PanStructureCluster):
+        description = "An identifier for PanStructureClusters that have been discarded from the current version of the PanRes database"
 
     '''
     Functional properties
@@ -139,8 +146,16 @@ def createModel(onto):
         namespace = onto
 
     class is_discarded(ObjectProperty):
-        domain = [PanGene]
-        range = [DiscardedPanGene]
+        domain = [Or([
+            PanGene,
+            PanStructure,
+            PanStructureCluster
+        ])]
+        range = [Or([
+            DiscardedPanGene,
+            DiscardedPanStructure,
+            DiscardedPanStructureCluster
+        ])]
         namespace = onto
 
     has_pan_name.inverse_property = same_as

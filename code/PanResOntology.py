@@ -20,7 +20,8 @@ load_targets(excelfile='data/targets.xlsx', onto=onto, logger=logger)
 panres.add_panres_genes("data/PanRes_data_v1.0.0.tsv", uc_file="data/gene_clusters.uc", onto = onto, logger = logger, discarded='data/discarded/panres_removed_headers.txt')
 
 # add proteins
-panres.add_panres_proteins(file = 'data/proteins/panres_final_protein.faa', clstrs='data/proteins/panres_final_protein_50_90.faa.clstr', struct_clstrs='data/proteins/3d_clustering.out', onto = onto, logger = logger)
+panres.add_panres_proteins(file = 'data/proteins/panres_final_protein.faa', clstrs='data/proteins/panres_final_protein_50_90.faa.clstr', struct_clstrs='data/proteins/3d_clustering.out', discarded_structures_file="data/discarded/structures_to_remove.txt",
+    discarded_structure_clusters_file="data/discarded/structure_clusters_to_remove.txt",onto = onto, logger = logger)
 
 # Load data about E. coli homologs
 panres.add_panres_ecoli_homologs(infile = "data/proteins/panres_ecoli_core_homologs_60_60.tsv", onto = onto, logger = logger)

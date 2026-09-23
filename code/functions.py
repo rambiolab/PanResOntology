@@ -505,7 +505,11 @@ def export_panres2_tables(onto, outdir="."):
             "ResistanceType": save_list(get_resistance_category(g))
         })
 
-    pd.DataFrame(rows).to_csv(f"{outdir}/PanGenes.tsv", sep="\t", index=False)
+    pd.DataFrame(rows).to_csv(
+        f"{outdir}/PanGenes.tsv",
+        sep="\t",
+        index=False
+    )
 
     # PanProtein table
     protein_rows = []
@@ -524,11 +528,20 @@ def export_panres2_tables(onto, outdir="."):
             "is_ecoli_homolog": 1 if any(p.is_ecoli_homolog) else 0,
         })
 
-    pd.DataFrame(protein_rows).to_csv(f"{outdir}/PanProteins.tsv", sep="\t", index=False)
+    pd.DataFrame(protein_rows).to_csv(
+        f"{outdir}/PanProteins.tsv",
+        sep="\t",
+        index=False
+    )
 
     # PanStructure table
     structure_rows = []
+
     for s in onto.PanStructure.instances():
+
+        # skip discarded structures entirely
+        if s.__class__.__name__ == "DiscardedPanStructure":
+            continue
 
         struct_clusters = [
             c for c in s.member_of
@@ -541,6 +554,10 @@ def export_panres2_tables(onto, outdir="."):
             "member_of_PanStructureCluster": save_list(struct_clusters),
         })
 
-    pd.DataFrame(structure_rows).to_csv(f"{outdir}/PanStructures.tsv", sep="\t", index=False)
+    pd.DataFrame(structure_rows).to_csv(
+        f"{outdir}/PanStructures.tsv",
+        sep="\t",
+        index=False
+    )
 
     print("PanRes2 tables created.")
