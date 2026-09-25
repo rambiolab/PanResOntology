@@ -12,13 +12,12 @@ The ontology can also be browsed in web version: https://panres.rambio.dk/
 In order to build the ontology with the genes included in the first version of PanRes, make sure to have the data files downloaded as well (see [data/](/data)).
 
 ### Requirements
-To built the ontology from scratch, the following libaries are required:
+To build the ontology from scratch, the following libaries are required:
 ```
 owlready2==0.44
 loguru==0.7.3
 pandas==1.5.3
 numpy==1.24.3
-
 ```
 
 ### Execute
@@ -35,3 +34,11 @@ Extended documentation on the classes and properties are described in the [model
 
 This figure shows the information structured in the ontology for the `pan_1` gene.
 ![Example of PanRes ontology](panres_ont_example.png)
+
+## Citation
+
+If you use PanRes, please cite:
+
+Vojtková M, et al. PanRes: A database of latent and acquired antimicrobial resistance allowing 3D-based protein homology search.
+
+Preprint: https://doi.org/10.64898/2026.06.22.733705
